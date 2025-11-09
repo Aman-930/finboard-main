@@ -100,8 +100,8 @@ actionBtns.forEach(btn => {
             // Navigate to add_income.html page
             window.location.href = 'add_income.html';
         } else if (action === 'View Reports') {
-            // In a real app, you would navigate to reports
-            console.log('Navigating to reports');
+            // Navigate to view_report.html page
+            window.location.href = 'view_report.html';
         }
     });
 });

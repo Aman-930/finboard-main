@@ -3,79 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Expense - FinTrackr</title>
+    <title>Add Income - FinTrackr</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="income_expense_forms.css">
+    <link rel="stylesheet" href="/add_expense.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-chart-line"></i>
-                    <span>FinTrackr</span>
-                </div>
-            </div>
-
-            <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <h4>MAIN MENU</h4>
-                    <ul>
-                        <li>
-                            <a href="dashboard.html">
-                                <i class="fas fa-home"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dashboard.html#accounts">
-                                <i class="fas fa-university"></i>
-                                <span>Accounts</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dashboard.html#transactions">
-                                <i class="fas fa-exchange-alt"></i>
-                                <span>Transactions</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dashboard.html#goals">
-                                <i class="fas fa-bullseye"></i>
-                                <span>Goals</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dashboard.html#budget">
-                                <i class="fas fa-chart-pie"></i>
-                                <span>Budget</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dashboard.html#investments">
-                                <i class="fas fa-chart-area"></i>
-                                <span>Investments</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="dashboard.html#reports">
-                                <i class="fas fa-file-alt"></i>
-                                <span>Reports</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </aside>
-
         <!-- Main Content -->
         <main class="main-content">
             <!-- Header -->
-            <header class="dashboard-header">
+            <div class="income-header">
                 <div class="header-left">
                     <h1>Add Expense</h1>
+                    <p>Add a new expense to track your spendings</p>
                 </div>
                 <div class="header-right">
                     <button class="back-btn" onclick="window.location.href='dashboard.html#budget'">
@@ -83,9 +24,9 @@
                         Back to Dashboard
                     </button>
                 </div>
-            </header>
+            </div>
 
-            <!-- Add Expense Form -->
+            <!-- Add Income Form -->
             <section class="add-expense-section">
                 <div class="form-container">
                     <div class="form-header">
@@ -158,20 +99,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group full-width recurring-options" id="recurringOptions" style="display: none;">
-                            <label for="recurringFrequency">Frequency</label>
-                            <div class="input-wrapper">
-                                <i class="fas fa-repeat"></i>
-                                <select id="recurringFrequency" name="frequency">
-                                    <option value="weekly">Weekly</option>
-                                    <option value="bi-weekly">Bi-weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="quarterly">Quarterly</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div>
-                        </div>
-
                         <div class="form-actions">
                             <button type="button" class="cancel-btn" onclick="window.location.href='dashboard.html#budget'">
                                 <i class="fas fa-times"></i>
@@ -205,86 +132,86 @@
                     <span>${message}</span>
                 </div>
             `;
-
+            
             // Add to document
             document.body.appendChild(notification);
-
+            
             // Remove after 3 seconds
             setTimeout(() => {
                 notification.remove();
             }, 3000);
         }
 
-        // Function to save expense data to API and localStorage as fallback
-        async function saveExpenseData(expenseData) {
+        // Function to save income data to API and localStorage as fallback
+        async function saveIncomeData(incomeData) {
             try {
                 // Try to save to backend first
-                const response = await dataService.createExpense(expenseData);
-                console.log('Expense saved to backend:', response);
+                const response = await dataService.createIncome(incomeData);
+                console.log('Income saved to backend:', response);
                 return response;
             } catch (error) {
                 console.error('Failed to save to backend, using localStorage:', error);
                 // Fallback to localStorage
-                let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
-                expenseData.id = Date.now();
-                expenseData.timestamp = new Date().toISOString();
-                expenses.push(expenseData);
-                localStorage.setItem('expenses', JSON.stringify(expenses));
-                showNotification('Expense saved locally (offline mode)', 'warning');
-                return expenseData;
+                let incomes = JSON.parse(localStorage.getItem('incomes') || '[]');
+                incomeData.id = Date.now();
+                incomeData.timestamp = new Date().toISOString();
+                incomes.push(incomeData);
+                localStorage.setItem('incomes', JSON.stringify(incomes));
+                showNotification('Income saved locally (offline mode)', 'warning');
+                return incomeData;
             }
         }
 
         // Set default date to today
-        document.getElementById('expenseDate').valueAsDate = new Date();
+        document.getElementById('incomeDate').valueAsDate = new Date();
 
         // Handle recurring checkbox
-        document.getElementById('expenseRecurring').addEventListener('change', function() {
+        document.getElementById('incomeRecurring').addEventListener('change', function() {
             const recurringOptions = document.getElementById('recurringOptions');
             recurringOptions.style.display = this.checked ? 'block' : 'none';
         });
 
         // Form submission
-        document.getElementById('expenseForm').addEventListener('submit', async function(e) {
+        document.getElementById('incomeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             try {
                 const formData = new FormData(this);
-                const expenseData = {
+                const incomeData = {
                     amount: parseFloat(formData.get('amount')),
                     date: formData.get('date'),
-                    category: formData.get('category'),
-                    merchant: formData.get('merchant'),
+                    type: formData.get('type'),
+                    source: formData.get('source'),
                     description: formData.get('description'),
                     recurring: formData.get('recurring') === 'on',
                     frequency: formData.get('frequency')
                 };
 
                 // Validate amount
-                if (isNaN(expenseData.amount) || expenseData.amount <= 0) {
+                if (isNaN(incomeData.amount) || incomeData.amount <= 0) {
                     throw new Error('Please enter a valid amount greater than 0');
                 }
 
-                // Validate category
-                if (!expenseData.category) {
-                    throw new Error('Please select a category');
+                // Validate type
+                if (!incomeData.type) {
+                    throw new Error('Please select an income type');
                 }
 
                 // Show loading state
                 const submitBtn = this.querySelector('.submit-btn');
                 const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Expense...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding Income...';
                 submitBtn.disabled = true;
 
                 // Save the data
-                await saveExpenseData(expenseData);
+                await saveIncomeData(incomeData);
 
                 // Show success message
-                showNotification('Expense added successfully!', 'success');
+                showNotification('Income added successfully!', 'success');
 
                 // Reset form
                 this.reset();
-                document.getElementById('expenseDate').valueAsDate = new Date();
+                document.getElementById('incomeDate').valueAsDate = new Date();
 
                 // Redirect back to Budget section after a short delay
                 setTimeout(() => {
@@ -296,10 +223,61 @@
             } finally {
                 // Reset button state
                 const submitBtn = this.querySelector('.submit-btn');
-                submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Expense';
+                submitBtn.innerHTML = '<i class="fas fa-plus"></i> Add Income';
                 submitBtn.disabled = false;
             }
         });
     </script>
+    
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification.success {
+            border-left: 4px solid #4fd1c7;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f56565;
+        }
+
+        .notification i {
+            font-size: 20px;
+        }
+
+        .notification.success i {
+            color: #4fd1c7;
+        }
+
+        .notification.error i {
+            color: #f56565;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </body>
 </html>
