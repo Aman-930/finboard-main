@@ -1013,11 +1013,11 @@ function displayUsers(users) {
     }
 }
 
-// Setup admin panel visibility
+// Admin Panel Setup
 function setupAdminPanel() {
     const userData = sessionStorage.getItem('fintrackr_user');
     let isAdmin = false;
-    
+
     if (userData) {
         try {
             const user = JSON.parse(userData);
@@ -1026,18 +1026,137 @@ function setupAdminPanel() {
             console.error('Error parsing user data:', error);
         }
     }
-    
-    const adminPanel = document.getElementById('adminPanel');
-    if (adminPanel) {
-        adminPanel.style.display = isAdmin ? 'block' : 'none';
-        if (isAdmin) {
-            // Add event listener for fetch users button
-            const fetchUsersBtn = document.getElementById('fetchUsersBtn');
-            if (fetchUsersBtn) {
-                fetchUsersBtn.addEventListener('click', fetchUsers);
-            }
-        }
+
+    if (isAdmin) {
+        // Show admin navigation items
+        const adminNavItems = document.querySelectorAll('.admin-nav-item');
+        adminNavItems.forEach(item => {
+            item.style.display = 'block';
+        });
+
+        // Show admin sections
+        const adminSections = document.querySelectorAll('.admin-dashboard-section, .admin-users-section, .admin-reports-section');
+        adminSections.forEach(section => {
+            section.style.display = 'block';
+        });
+
+        // Load admin data
+        loadAdminDashboard();
+        loadUsersList();
+        loadReportsList();
     }
+}
+
+// Load Admin Dashboard Data
+function loadAdminDashboard() {
+    // Simulate loading admin stats
+    document.getElementById('totalUsers').textContent = '1,250';
+    document.getElementById('activeUsers').textContent = '892';
+    document.getElementById('totalReports').textContent = '456';
+    document.getElementById('systemHealth').textContent = '98%';
+
+    // Simulate system metrics
+    document.getElementById('cpuUsage').textContent = '45%';
+    document.getElementById('cpuUsage').parentElement.nextElementSibling.firstElementChild.style.width = '45%';
+
+    document.getElementById('memoryUsage').textContent = '67%';
+    document.getElementById('memoryUsage').parentElement.nextElementSibling.firstElementChild.style.width = '67%';
+
+    document.getElementById('storageUsage').textContent = '34%';
+    document.getElementById('storageUsage').parentElement.nextElementSibling.firstElementChild.style.width = '34%';
+
+    document.getElementById('apiResponseTime').textContent = '120ms';
+    document.getElementById('apiResponseTime').parentElement.nextElementSibling.firstElementChild.style.width = '60%';
+}
+
+// Load Users List
+function loadUsersList() {
+    const usersList = document.getElementById('usersList');
+    const users = [
+        { id: 1, name: 'John Doe', email: 'john@example.com', role: 'user', status: 'active', lastLogin: '2024-01-15' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'admin', status: 'active', lastLogin: '2024-01-14' },
+        { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'user', status: 'inactive', lastLogin: '2024-01-10' }
+    ];
+
+    usersList.innerHTML = users.map(user => `
+        <div class="user-item">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h4>${user.name}</h4>
+                    <p>${user.email}</p>
+                    <span class="user-role ${user.role}">${user.role}</span>
+                </div>
+            </div>
+            <div class="user-status">
+                <span class="status ${user.status}">${user.status}</span>
+                <div class="user-actions">
+                    <button class="edit-user-btn" onclick="editUser(${user.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-user-btn" onclick="deleteUser(${user.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Load Reports List
+function loadReportsList() {
+    const reportsList = document.getElementById('reportsList');
+    const reports = [
+        { id: 1, title: 'Monthly User Activity Report', type: 'user', date: '2024-01-15', status: 'completed' },
+        { id: 2, title: 'System Performance Report', type: 'system', date: '2024-01-14', status: 'completed' },
+        { id: 3, title: 'Financial Summary Report', type: 'financial', date: '2024-01-13', status: 'pending' }
+    ];
+
+    reportsList.innerHTML = reports.map(report => `
+        <div class="report-item">
+            <div class="report-info">
+                <div class="report-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="report-details">
+                    <h4>${report.title}</h4>
+                    <p>Type: ${report.type} | Date: ${report.date}</p>
+                    <span class="report-status ${report.status}">${report.status}</span>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="view-report-btn" onclick="viewReport(${report.id})">
+                    <i class="fas fa-eye"></i>
+                    View
+                </button>
+                <button class="download-report-btn" onclick="downloadReport(${report.id})">
+                    <i class="fas fa-download"></i>
+                    Download
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Admin Functions
+function editUser(userId) {
+    alert(`Edit user with ID: ${userId}`);
+}
+
+function deleteUser(userId) {
+    if (confirm('Are you sure you want to delete this user?')) {
+        alert(`Delete user with ID: ${userId}`);
+    }
+}
+
+function viewReport(reportId) {
+    alert(`View report with ID: ${reportId}`);
+}
+
+function downloadReport(reportId) {
+    alert(`Download report with ID: ${reportId}`);
 }
 
 // Setup navigation and event handlers for dashboard page
@@ -1150,9 +1269,6 @@ async function updateDashboardSummary() {
     }
 }
 
-// Update user profile name and welcome message with secure token manager
-// Removed duplicate updateUserInfo definition
-
 // Initialize mock data for demo purposes
 function initializeMockData() {
     // Mock data disabled for production: return early to keep dashboards fresh for new users
@@ -1161,29 +1277,6 @@ function initializeMockData() {
 
 // Demo toggle: set to true only when you want demo data to be seeded
 window.FINTRACKR_DEMO = window.FINTRACKR_DEMO === true;
-
-// Call on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.FINTRACKR_DEMO) {
-        initializeMockData();
-    }
-    updateUserInfo();
-    // Set dynamic date in welcome section
-    const dateEl = document.getElementById('welcomeDate');
-    if (dateEl) {
-        const now = new Date();
-        const formatted = now.toLocaleDateString(undefined, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        dateEl.textContent = formatted;
-    }
-
-    initializeDashboard();
-});
-
-
 
 // Reset charts function
 function resetCharts() {
@@ -1247,22 +1340,12 @@ function resetUserData() {
     // Financial data cleared
 }
 
-// Initialize dashboard without resetting data
-// resetDummyData(); // Commented out to preserve user data
-
-// Call immediately and also on DOM ready
-updateUserInfo();
-document.addEventListener('DOMContentLoaded', () => {
-    updateUserInfo();
-    initializeDashboard();
-});
-
 // Initialize basic components
 async function initializeBasicComponents() {
     try {
         // Setup logout functionality
         setupLogoutFunctionality();
-        
+
         console.log('Basic components initialized');
     } catch (error) {
         console.error('Failed to initialize basic components:', error);
@@ -1301,8 +1384,23 @@ async function logout() {
     }
 }
 
-// Also call after a short delay to ensure elements are loaded
-setTimeout(() => {
+// Call on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.FINTRACKR_DEMO) {
+        initializeMockData();
+    }
     updateUserInfo();
+    // Set dynamic date in welcome section
+    const dateEl = document.getElementById('welcomeDate');
+    if (dateEl) {
+        const now = new Date();
+        const formatted = now.toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        dateEl.textContent = formatted;
+    }
+
     initializeDashboard();
-}, 100);
+});
