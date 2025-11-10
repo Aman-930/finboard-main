@@ -973,7 +973,74 @@ body {
     font-size: 12px;
     color: #718096;
 }
+/* Expense List*/
+.expense-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 
+.expense-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.expense-item:hover {
+    background: #edf2f7;
+    transform: translateX(4px);
+}
+
+.expense-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.expense-icon.food {
+    background: #f0fff4;
+    color: #38a169;
+}
+
+.expense-icon.transportation {
+    background: #f7faff;
+    color: #4299e1;
+}
+
+.expense-icon.shopping {
+    background: #fef5e7;
+    color: #d69e2e;
+}
+
+.expense-details {
+    flex: 1;
+}
+
+.expense-details h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.expense-details p {
+    font-size: 14px;
+    color: #718096;
+}
+
+.expense-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #38a169;
+}
 /* Monthly Trend Chart */
 .trend-chart {
     height: 150px;
