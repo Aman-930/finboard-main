@@ -797,7 +797,7 @@ body {
 
 .bar-label {
     position: absolute;
-    bottom: -20px;
+    bottom: -14px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 12px;
@@ -1722,7 +1722,7 @@ body {
 .chart-container {
     background: #f8fafc;
     border-radius: 12px;
-    padding: 20px;
+    padding: 15px;
     border: 1px solid #e2e8f0;
     margin-bottom: 16px;
 }
